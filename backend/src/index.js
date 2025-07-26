@@ -54,6 +54,23 @@ app.post('/api/notes', async (req, res, next) => {
     .catch(error => next(error))
 })
 
+app.put('/api/notes/:id', async (req, res, next) => {
+  try {
+    const note = await Note.findById(req.params.id)
+
+    if (!note) {
+      return res.status(404).json({ error: 'note not found' })
+    }
+
+    note.important = !note.important
+
+    const updatedNote = await note.save()
+    res.json(updatedNote)
+  } catch (error) {
+    next(error)
+  }
+});
+
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
 
